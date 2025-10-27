@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>hookes-law-v2</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stopping Distance Simulator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+<div class="container">
+  <header class="page-header">
+        <div class="header-grid">
+           <div class="header-left">  <button id="download-worksheet-btn" class="btn navy-btn" aria-label="Download worksheet PDF">Worksheet</button></div>
+          <h1 class="page-title">Investigating Extension</h1>
+          <div class="header-actions">
+            <button class="btn gold-btn">Quiz yourself!</button>
+          </div>
+        </div>
+      </header>
+<script>
+            document.getElementById('download-worksheet-btn').addEventListener('click', () => {
+                const url = '/assets/stopping-distance-worksheet.pdf';
+                const w = window.open(url, '_blank');
+                if (w) {
+                    try { w.opener = null; } catch (e) { }
+                } else {
+                    // popup blocked — fallback to navigate in same tab
+                    window.location.href = url;
+                }
+            });
+        </script>
+  <main class="main">
+    <!-- Top Section: Simulation and Controls side by side -->
+    <div class="top-section">
+      <!-- Simulation Area -->
+      <div class="sim-column">
+        <div id="simulation-container" class="simulation-container">
+          <div class="sim-inner">
+            <!-- Material Setup -->
+            <div class="material-setup">
+              <div id="material-label" class="material-label">Spring</div>
+
+              <div class="stand w-64 h-4 mb-2"></div>
+              <div class="hook w-8 h-4 negative-mt-2"></div>
+
+              <div id="spring-container" class="spring-container">
+                <svg id="spring-svg" class="spring-svg" preserveAspectRatio="none">
+                  <path id="spring-path"></path>
+                </svg>
+              </div>
+
+              <div id="rubber-band" class="rubber-band h-20 hidden"></div>
+
+              <div id="mass-hook" class="mass-hook hidden">
+                <div class="mass-connector"></div>
+
+                <div id="mass-stack" class="mass-stack hidden">
+                  <div id="additional-masses" class="additional-masses"></div>
+                  <div class="base-mass base-mass-small"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="ruler" class="ruler">
+            <div id="ruler-scale" class="ruler-scale">
+              <div class="cm-mark"></div>
+            </div>
+            <div id="ruler-handle" class="ruler-handle">☰</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Panel -->
+      <div class="controls-column">
+        <div class="controls-panel">
+          <h2 class="controls-title">Experiment Controls</h2>
+
+          <div class="control-block material-selection">
+            <h3 class="control-heading">Material Selection</h3>
+            <div class="material-selection-row">
+              <span class="label-text">Spring</span>
+
+              <label class="material-toggle">
+                <input type="checkbox" id="material-toggle">
+                <span class="slider"></span>
+              </label>
+
+              <span class="label-text">Rubber Band</span>
+            </div>
+          </div>
+
+          <div id="spring-options" class="control-block spring-options-block">
+            <h3 class="control-heading">Spring Options</h3>
+
+            <div class="spring-options-grid">
+              <div class="spring-option selected" data-k="25">
+                <div class="spring-option-label">Soft</div>
+                <div class="spring-option-sub">k = 25 N/m</div>
+              </div>
+
+              <div class="spring-option" data-k="50">
+                <div class="spring-option-label">Medium</div>
+                <div class="spring-option-sub">k = 50 N/m</div>
+              </div>
+
+              <div class="spring-option" data-k="75">
+                <div class="spring-option-label">Stiff</div>
+                <div class="spring-option-sub">k = 75 N/m</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-block mass-controls-block">
+            <h3 class="control-heading">Mass Controls</h3>
+
+            <div class="mass-controls-inner">
+              <div id="mass-display" class="mass-display">0 × 100g masses</div>
+
+              <div class="mass-buttons-row">
+                <button id="remove-mass" class="btn coral-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  Remove Mass
+                </button>
+
+                <button id="add-mass" class="btn gold-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                  </svg>
+                  Add 100g Mass
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-block record-block">
+            <h3 class="control-heading">Record Measurement</h3>
+
+            <div class="record-inner">
+              <div class="record-left">
+                <label class="block-label">Extension (cm)</label>
+                <input type="number" id="extension-input" min="0" step="0.1" class="extension-input" placeholder="Enter measurement">
+              </div>
+
+              <button id="record-btn" class="btn record-btn">Record</button>
+            </div>
+          </div>
+
+          <button id="reset" class="btn reset-btn">Reset All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section: Results Table -->
+    <div class="results-wrapper">
+      <h2 class="results-title">Experiment Results</h2>
+
+      <div class="results-table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr class="results-thead-row">
+              <th class="th-left">Material</th>
+              <th class="th-center">Masses (kg)</th>
+              <th class="th-center">Weight (N)</th>
+              <th class="th-center">Extension (cm)</th>
+              <th class="th-center actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="results-table">
+            <!-- Results will be added here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="no-results-message" class="no-results-text">
+        No measurements recorded yet. Use the controls above to conduct experiments.
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>

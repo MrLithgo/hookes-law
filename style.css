@@ -1,0 +1,681 @@
+/* -------------------------
+   Core / reset
+   ------------------------- */
+:root {
+  --navy: #2c3e50;
+  --softgray: #ecf0f1;
+  --teal: #1abc9c;
+  --gold: #f1c40f;
+  --slate: #7f8c8d;
+  --coral: #e74c3c;
+  --white: #ffffff;
+  --gray-100: #f7fafc;
+  --gray-200: #edf2f7;
+  --gray-300: #e2e8f0;
+  --max-width: 1200px;
+  --container-pad: 16px;
+  --radius: 10px;
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --road-top: #64748b;
+  --road-bottom: #94a3b8;
+  --thinking-color: rgba(234, 179, 8, 0.5);
+  --braking-color: rgba(239, 68, 68, 0.5);
+}
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+/* Page base */
+body {
+  margin: 0;
+  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+  color: var(--navy);
+  background: linear-gradient(135deg, #ecf0f1 0%, #d6dbdf 100%);
+  padding: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+li {
+  line-height: 2;
+}
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px;
+}
+/* Utility */
+.hidden { display: none !important; }
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+}
+.header-left{
+  justify-self: start;
+}
+
+.page-header {
+    text-align: center;
+    color: var(--navy);
+    padding: 1rem;
+    position: relative;
+}
+
+.header-grid{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; 
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+.page-title{
+  margin: 0;
+  justify-self: center;   /* ensures exact centering of the title cell */
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+}
+.header-actions{
+  justify-self: end;
+}
+
+/* mobile: stack nicely */
+@media (max-width: 767px){
+  .header-grid{
+    grid-template-columns: 1fr; /* stack everything */
+    grid-auto-flow: row;
+    text-align: left;
+  }
+  .page-title{ justify-self: start; }
+  .header-actions{ justify-self: start; width:100%; margin-top:8px; }
+  
+}
+.cols {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Buttons positioned top-left and top-right */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid transparent;
+    width: auto;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 24px;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* button variants */
+.teal-btn {
+  background: rgba(26, 188, 156, 0.9);
+  color: var(--white);
+}
+.teal-btn:hover {
+  background: rgba(26, 188, 156, 0.8);
+  transform: translateY(-10%);
+  opacity: 0.98;
+}
+
+.gold-btn {
+  background: rgba(241, 196, 15, 0.9);
+  color: var(--navy);
+}
+.gold-btn:hover {
+  background: rgba(241, 196, 15, 0.8);
+  transform: translateY(-10%);
+  opacity: 0.98;
+}
+
+.navy-btn {
+  background: rgba(44, 62, 80, 0.9);
+  color: var(--white);
+}
+.navy-btn:hover {
+  background: rgba(44, 62, 80, 0.8);
+  transform: translateY(-10%);
+  opacity: 0.98;
+}
+.coral-btn {
+  background-color: rgba(231, 76, 60, 0.8);
+  color: white;
+}
+
+.coral-btn:hover {
+  background-color: rgba(231, 76, 60, 0.7);
+  transform: translateY(-10%);
+  opacity: 0.98;
+}
+
+
+/* -------------------------
+   Main wrapper and layout
+   ------------------------- */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* top section layout mirrors flex-col on small, row on lg */
+.top-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* On larger screens place side-by-side (match lg:flex-row) */
+@media (min-width: 1024px) {
+  .top-section { flex-direction: row; align-items: flex-start; }
+}
+
+/* Simulation column expands */
+.sim-column { flex: 1; }
+
+/* Controls column fixed width similar to lg:w-96 (24rem ~ 384px) */
+.controls-column { width: 384px; }
+
+/* -------------------------
+   Simulation container
+   ------------------------- */
+.simulation-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(44,62,80,0.09);
+  padding: 16px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.sim-inner {
+  height: 100%;
+  display: flex;
+  justify-content: center; /* keep horizontal centering */
+  align-items: flex-start; /* <-- align children to top of the sim area */
+  padding-top: 10px;      
+}
+
+
+.material-setup {
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  padding-top: 18px;           
+  width: 66%;
+  position: relative;
+  z-index: 2;
+}
+
+.material-label {
+  text-align: center;
+  font-weight: 700;
+ 
+  margin-bottom: 8px;
+  background: rgba(26,188,156,0.2); 
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-size: 1.125rem;
+  color: #2C3E50;
+}
+
+/* stand, hook, small helpers (keep original look) */
+.stand {
+  margin: 0 0 8px 0; /* no extra top margin */
+  width: 16rem;
+  height: 1rem;
+  background-color: #7F8C8D;
+}
+.hook { width: 2rem; height: 1rem; background-color: #7F8C8D; border-radius: 50% 50% 0 0; margin-top: -8px; }
+.w-64 { width: 16rem; }
+.h-4 { height: 1rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.w-8 { width: 2rem; }
+.h-4 { height: 1rem; }
+.negative-mt-2 { margin-top: -0.5rem; }
+
+/* spring container / svg */
+.spring-container {
+  width: 56px;
+  transition: height 0.5s ease;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.spring-svg { width: 100%; height: 100%; display: block; }
+#spring-path {
+  stroke: #2C3E50;
+  stroke-width: 1.5;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  transition: d .5s ease;
+}
+
+/* rubber band */
+.rubber-band {
+  background-color: #E74C3C;
+  border-radius: 4px;
+  transition: height 0.5s ease;
+  width: 8px;
+}
+
+/* mass and connector */
+.mass-hook {
+  position: relative;
+  z-index: 10;
+  background-color: #7F8C8D;
+  transition: all 0.3s ease;
+  margin-bottom: -1px;
+  width: 1.5rem;
+  height: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 0 0 8px 8px;
+}
+
+.mass-connector {
+  width: 2px;
+  height: 40px;
+  background-color: #2C3E50;
+  margin: 6px auto 0;
+  border-radius: 2px 2px 0 0;
+}
+
+.mass-stack { transition: all 0.3s ease; text-align: center; }
+#mass-stack {
+  position: absolute;        /
+  top: calc(40px);    
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+  z-index: 20;
+  pointer-events: none;     
+}
+.base-mass {
+  background-color: #2C3E50;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.base-mass-small { width: 4rem; height: 1rem; }
+
+/* additional masses look */
+.additional-mass {
+  width: 64px;
+  height: 16px;
+  background-color: #3a5169;
+  margin: 1px 0;
+  border-radius: 5px;
+}
+
+/* -------------------------
+   Ruler
+   ------------------------- */
+.ruler {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  width: 50px;
+  height: 370px;
+  background: #f8f1e0;
+  border: 1px solid #d4c9a8;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  cursor: move;
+  z-index: 1;
+  border-radius: 2px;
+}
+
+/* Ruler ticks — put this at the end of your CSS to ensure it wins */
+#ruler-scale { position: relative; height: 100%; border-left: 2px solid #333; }
+
+/* base tick */
+#ruler-scale .cm-mark {
+  position: absolute;
+  left: 0;
+  width: 18px;            /* major tick length */
+  height: 1px;
+  background: #333;
+  top: 0;                 /* JS will change top per-tick */
+  pointer-events: none;
+}
+
+/* medium (5mm) */
+#ruler-scale .cm-mark.medium {
+  width: 12px;
+  background: #666;
+}
+
+/* minor (1mm) */
+#ruler-scale .cm-mark.minor {
+  width: 8px;
+  background: #999;
+}
+
+/* optional: number labels (if you add .cm-number elements) */
+#ruler-scale .cm-number {
+  position: absolute;
+  left: 22px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+
+#ruler-handle, .ruler-handle {
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  background: #d4c9a8;
+  opacity: 0.7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: move;
+  user-select: none;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  transform: translateY(-50%);
+}
+
+/* -------------------------
+   Controls panel
+   ------------------------- */
+.controls-panel {
+  background: #2C3E50; /* navy */
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(44,62,80,0.09);
+  padding: 16px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.controls-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  text-align: center;
+  color: #fff;
+}
+
+/* control blocks */
+.control-block { margin-bottom: 16px; }
+.control-heading { font-weight: 600; margin: 0 0 8px 0; color: #fff; }
+
+/* material selection row */
+.material-selection-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.10);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.label-text { font-weight: 500; color: #fff; }
+
+/* toggle switch (same as your CSS) */
+.material-toggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.material-toggle input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #7F8C8D;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px; width: 26px; left: 4px; bottom: 4px;
+  background-color: white; transition: .4s; border-radius: 50%;
+}
+.material-toggle input:checked + .slider { background-color: #E74C3C; }
+.material-toggle input:checked + .slider:before { transform: translateX(26px); }
+
+/* -------------------------
+   Spring options grid
+   ------------------------- */
+.spring-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.spring-option {
+  background: rgba(26,188,156,1); /* will be overridden for opacity variants below */
+  padding: 8px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+/* to mimic bg-teal bg-opacity variants, we set opacity where used:
+   first option (selected) solid teal, second medium opacity, third more transparent */
+.spring-option:nth-child(1) { background: #1ABC9C; }
+.spring-option:nth-child(2) { background: rgba(26,188,156,0.8); }
+.spring-option:nth-child(3) { background: rgba(26,188,156,0.6); }
+
+.spring-option .spring-option-sub { font-size: 0.75rem; opacity: 0.95; color: white; }
+
+.spring-option.selected {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+/* -------------------------
+   Mass controls
+   ------------------------- */
+.mass-controls-inner {
+  background: rgba(255,255,255,0.10);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.mass-display { text-align: center; font-weight: 700; font-size: 1rem; margin-bottom: 8px; color: #fff; }
+
+.mass-buttons-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+
+
+
+.remove-mass-btn { background: #E74C3C; color: #fff; width: 128px; justify-content: center; }
+.add-mass-btn { background: #F1C40F; color: #2C3E50; width: 128px; justify-content: center; }
+
+/* small icon sizing */
+.icon { width: 18px; height: 18px; }
+
+/* record block */
+.record-inner {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255,255,255,0.10);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.record-left { flex: 1; }
+.block-label { display: block; margin-bottom: 6px; color: #fff; font-size: 0.9rem; }
+.extension-input { padding: 8px; border-radius: 8px; border: none; width: 100%; max-width: 160px; }
+
+/* record button styled similar to toggle */
+.record-btn { background: #1ABC9C; color: #fff; }
+
+/* reset button across full width */
+.reset-btn {
+  background: #E74C3C;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* -------------------------
+   Results section
+   ------------------------- */
+.results-wrapper {
+  background: #2C3E50;
+  color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(44,62,80,0.09);
+}
+
+.results-title { text-align: center; margin: 0 0 12px 0; font-weight: 700; font-size: 1.125rem; color: #fff; }
+
+.results-table-wrap { overflow-x: auto; }
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.results-table thead th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255,255,255,0.30);
+  color: #fff;
+}
+
+.results-table tbody td {
+  padding: 10px 12px;
+  text-align: center;
+  border-bottom: 1px dashed rgba(255,255,255,0.04);
+  color: #fff;
+}
+
+/* actions column width like w-24 */
+.actions-col { width: 6rem; }
+
+.results-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.03); }
+
+/* no results text */
+.no-results-text {
+  text-align: center;
+  padding: 12px;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+}
+
+/* -------------------------
+   Small responsive tweaks to match sm:px and etc
+   ------------------------- */
+@media (max-width: 1024px) {
+  .controls-column { width: 100%; }
+  .controls-panel { min-height: auto; }
+  .top-section { gap: 12px; }
+}
+
+@media (max-width: 640px) {
+  .title-row { padding: 0 16px; }
+  .page-title { font-size: 1.25rem; }
+  .help-button, .quiz-button { width: 120px; top: -12px; }
+}
+/* Table row / cell utilities (replaces Tailwind utilities used in JS) */
+.table-row.row-bordered {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10); /* border-white + 10% opacity */
+}
+
+/* cell padding & alignment that matches py-2 px-4 text-centre etc */
+.cell {
+  padding: 8px 12px;            /* roughly equivalent to py-2 px-4 */
+  vertical-align: middle;
+  color: inherit;               /* inherit text color from table */
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.cell-left {
+  text-align: left;
+}
+
+.cell-center {
+  text-align: center;
+}
+
+
+.small-btn {
+  padding: 6px 10px;
+  font-size: 0.9rem;
+}
+
+/* Coral / delete button look (from your palette) */
+.coral-btn {
+  background-color: rgba(231, 76, 60, 0.8); /* coral */
+  color: #ffffff;
+}
+
+.coral-btn:hover {
+  background-color: rgba(231, 76, 60, 1);
+  transform: translateY(-2px);
+  opacity: 0.98;
+}
+
+/* specific delete button extras (optional) */
+.delete-btn {
+  /* keep a consistent width so table stays tidy (optional) */
+  min-width: 72px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Ensure table cells remain readable on narrow screens */
+@media (max-width: 480px) {
+  .cell { padding: 6px 8px; }
+  .small-btn { padding: 6px 8px; font-size: 0.85rem; min-width: 68px; }
+}
